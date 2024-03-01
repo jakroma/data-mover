@@ -1,0 +1,81 @@
+# **Data-mover**
+
+- [**Data-mover**](#data-mover)
+  - [Process overview](#process-overview)
+    - [Diagrams](#diagrams)
+  - [Run](#run)
+    - [cargo](#cargo)
+    - [docker](#docker)
+  - [TODO](#todo)
+    - [DB](#db)
+      - [Steps of migration](#steps-of-migration)
+    - [Migrations](#migrations)
+    - [SQL -\> Nosql settings](#sql---nosql-settings)
+    - [Functions](#functions)
+
+
+## Process overview
+
+### Diagrams
+
+```Mermaid
+flowchart TD
+    A[Data Provider] --> B
+    B{Which db type}
+    B -->|NoSQL->SQL| C[Analyze Data 'no schema resolve strategy']
+    B -->|SQL->NoSQL| D[Create json data definition]
+    C --> D
+    D --> E[Generate dbc 'Data file']
+    E -->|separate process but could be run in one or separate| F[Data Receiver]
+    F --> G[Migrate Data]
+```
+
+## Run
+
+### cargo
+todo
+
+### docker
+1. Build image
+```
+docker build -t data-mover .
+```
+
+2.
+```
+docker build -t data-mover .
+```
+
+## TODO
+
+### DB
+
+#### Steps of migration
+
+| Database    | Generate simple tables from provider | Import to receiver db | Tests |
+| ----------- | :----------------------------------: | :-------------------: | :---: |
+| Postgressql |            :construction:            |          :x:          |  :x:  |
+| Mongodb     |                 :x:                  |    :construction:     |  :x:  |
+
+### Migrations
+
+|             |  Postgressql   |    Mongodb     |
+| ----------- | :------------: | :------------: |
+| Postgressql |                | :construction: |
+| Mongodb     | :construction: |                |
+
+
+### SQL -> Nosql settings
+
+| Strategy     | Mongodb |
+| ------------ | :-----: |
+| Denormalized |   :x:   |
+| Normalized   |   :x:   |
+
+### Functions
+
+| Name               | Functionality  |
+| ------------------ | :------------: |
+| Channels           |      :x:       |
+| Data by file       | :construction: |
+| Data by enumerator |      :x:       |

@@ -1,0 +1,53 @@
+version: '3.7'
+services:
+  postgres_from:
+    image: postgres:15
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test
+    networks:
+      - mach
+    volumes:
+        - db-data:/var/lib/postgre
+    restart: always
+
+  postgres_to:
+    image: postgres:15
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test
+    networks:
+      - mach
+    volumes:
+        - db-data:/var/lib/postgre
+    restart: always
+
+  mongodb_from:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27018:27017"
+
+  mongodb_to:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27019:27017"
+
+networks:
+  mach:
+      driver: bridge
+volumes:
+  db-data:

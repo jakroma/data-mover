@@ -1,0 +1,8 @@
+[profile.release]
+resolver = "2"
+
+[workspace]
+members = [
+    "core",
+    "cli"
+]
