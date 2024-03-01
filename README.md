@@ -18,7 +18,7 @@
 
 ### Diagrams
 
-```Mermaid
+```mermaid
 flowchart TD
     A[Data Provider] --> B
     B{Which db type}
