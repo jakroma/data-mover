@@ -4,6 +4,8 @@ use url::ParseError;
 pub enum DMError {
     #[error("IO error")]
     IoError(std::io::Error),
+    #[error("PostgreSQL error")]
+    DbError(tokio_postgres::Error),
     #[error("Not supported type")]
     NotSupportedType(),
     #[error("Not supported db")]
@@ -23,5 +25,11 @@ impl From<ParseError> for DMError {
 impl From<std::io::Error> for DMError {
     fn from(err: std::io::Error) -> DMError {
         DMError::IoError(err)
+    }
+}
+
+impl From<tokio_postgres::Error> for DMError {
+    fn from(err: tokio_postgres::Error) -> DMError {
+        DMError::DbError(err)
     }
 }

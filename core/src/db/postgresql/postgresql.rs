@@ -1,13 +1,15 @@
 use tokio_postgres::{Client, NoTls};
 
 use crate::{
-    error::DMError,
-    models::{connection_model::ConnectionModel, migration_setting::MigrationSetting, migration_execution_settings::MigrationExecutionSettings},
+    models::{
+        connection::MigrationConnection, migration_execution_settings::MigrationExecutionSettings,
+    },
+    DMResult,
 };
 
 pub struct Postgresql {
     pub client: Client,
-    pub exec_settings: MigrationExecutionSettings
+    pub exec_settings: MigrationExecutionSettings,
 }
 
 #[derive(Debug)]
@@ -22,11 +24,14 @@ pub struct ColumnInfo {
     pub column_name: String,
     pub data_type: String,
     pub is_nullable: bool,
-    pub is_primary_key: bool
+    pub is_primary_key: bool,
 }
 
 impl Postgresql {
-    pub async fn new(connection_model: ConnectionModel, exec_settings: MigrationExecutionSettings) -> Result<Postgresql, DMError> {
+    pub async fn new(
+        connection_model: MigrationConnection,
+        exec_settings: MigrationExecutionSettings,
+    ) -> DMResult<Postgresql> {
         let (client, connection) = tokio_postgres::connect(
             &format!(
                 "host={0} user={1} password={2} dbname={3} port={4}",
@@ -46,6 +51,9 @@ impl Postgresql {
             }
         });
 
-        Ok(Postgresql { client, exec_settings })
+        Ok(Postgresql {
+            client,
+            exec_settings,
+        })
     }
 }
