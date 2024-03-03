@@ -25,6 +25,8 @@ pub struct ColumnInfo {
     pub data_type: String,
     pub is_nullable: bool,
     pub is_primary_key: bool,
+    pub foreign_table_name: String,
+    pub foreign_column_name: String
 }
 
 impl Postgresql {
