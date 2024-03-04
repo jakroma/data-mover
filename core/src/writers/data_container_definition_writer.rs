@@ -1,10 +1,10 @@
 use std::{
-    fs::{File, OpenOptions},
+    fs::{File},
     io::Write,
     path::Path,
 };
 
-use crate::{db::postgresql::postgresql::TableInfo, DMError, DMResult};
+use crate::{db::postgresql::postgresql::TableInfo, DMResult};
 
 pub fn write_definition(
     table_info: &TableInfo,
@@ -31,5 +31,5 @@ pub fn write_definition(
     write!(file, "]")?;
     write!(file, "}}")?;
 
-    Ok(())
+    Ok(()) 
 }
