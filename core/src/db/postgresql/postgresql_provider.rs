@@ -1,7 +1,6 @@
 use crate::{
-    constants::postgresql::{DEFAULT_SCHEMA, POSTGRESQL_COLUMNS_QUERY, POSTGRESQL_SCHEMA_TABLE},
-    models::data_definitions::{DataDefinition, DataPropertyInfo},
-    DMError, DMResult,
+    constants::postgresql::{POSTGRESQL_COLUMNS_QUERY, POSTGRESQL_SCHEMA_TABLE},
+    models::data_definitions::{DataDefinition, DataPropertyInfo}, DMResult,
 };
 
 use super::postgresql::Postgresql;
@@ -10,11 +9,11 @@ impl Postgresql {
     pub async fn create_table_info(&self) -> DMResult<Vec<DataDefinition>> {
         let rows: Vec<tokio_postgres::Row> =
             self.client.query(POSTGRESQL_SCHEMA_TABLE, &[]).await?;
-        let tables = get_tables_with_schema(rows);
-        let mut result = Vec::new();
+        let tables: Vec<String> = get_tables_with_schema(rows);
+        let mut result: Vec<DataDefinition> = Vec::new();
         for table in tables {
-            let columns = self.create_column_info(&table).await?;
-            let table_info = DataDefinition {
+            let columns: Vec<DataPropertyInfo> = self.create_column_info(&table).await?;
+            let table_info: DataDefinition = DataDefinition {
                 data_container_name: table,
                 property_info: columns,
             };
@@ -25,7 +24,7 @@ impl Postgresql {
     }
 
     pub async fn create_column_info(&self, table_name: &str) -> DMResult<Vec<DataPropertyInfo>> {
-        let column_info = self
+        let column_info: Vec<tokio_postgres::Row> = self
             .client
             .query(POSTGRESQL_COLUMNS_QUERY, &[&table_name])
             .await?;

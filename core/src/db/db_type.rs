@@ -8,10 +8,10 @@ pub enum Database {
 
 impl Database {
     pub fn new(s: &String) -> DMResult<Database> {
-        if s.eq_ignore_ascii_case("postgresql") {
+        if s.starts_with("postgresql") {
             Ok(Database::Postgressql)
         }
-        else if s.eq_ignore_ascii_case("mongodb") {
+        else if s.starts_with("mongodb") {
             Ok(Database::Mongodb)
         }
         else {

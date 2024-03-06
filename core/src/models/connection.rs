@@ -4,6 +4,7 @@ use crate::{DMError, DMResult, db::db_type::Database};
 
 #[derive(Clone)]
 pub struct MigrationConnection {
+    pub full_url: String,
     pub host: String,
     pub port: u16,
     pub user: String,
@@ -27,9 +28,9 @@ impl MigrationConnections {
 }
 
 impl MigrationConnection {
-    pub fn new(s: &String) -> DMResult<MigrationConnection> {
-        let db_type = Database::new(s)?;
-        let url = Url::parse(&s)?;
+    pub fn new(full_url: &String) -> DMResult<MigrationConnection> {
+        let db_type = Database::new(full_url)?;
+        let url = Url::parse(&full_url)?;
 
         let user = url.username().to_string();
         if user.is_empty()
@@ -62,6 +63,7 @@ impl MigrationConnection {
 
 
         Ok(MigrationConnection {
+            full_url: full_url.to_owned(),
             host,
             port,
             user,
