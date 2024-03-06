@@ -23,8 +23,8 @@ impl DataProvider for Postgresql {
 
         for table_info in table_infos {
 
-            let definition_path = format!("{0}{1}{2}_definition.json", temp_folder_path, path::MAIN_SEPARATOR, table_info.table_name);
-            let data_path = format!("{0}{1}{2}_data.dbc", temp_folder_path, path::MAIN_SEPARATOR, table_info.table_name);
+            let definition_path = format!("{0}{1}{2}_definition.json", temp_folder_path, path::MAIN_SEPARATOR, table_info.data_container_name);
+            let data_path = format!("{0}{1}{2}_data.dbc", temp_folder_path, path::MAIN_SEPARATOR, table_info.data_container_name);
             
             write_definition(&table_info, Path::new(&definition_path))?;
         }

@@ -12,23 +12,6 @@ pub struct Postgresql {
     pub exec_settings: MigrationExecutionSettings,
 }
 
-#[derive(Debug)]
-pub struct TableInfo {
-    pub table_schema: String,
-    pub table_name: String,
-    pub columns: Vec<ColumnInfo>,
-}
-
-#[derive(Debug)]
-pub struct ColumnInfo {
-    pub column_name: String,
-    pub data_type: String,
-    pub is_nullable: bool,
-    pub is_primary_key: bool,
-    pub foreign_table_name: String,
-    pub foreign_column_name: String
-}
-
 impl Postgresql {
     pub async fn new(
         connection_model: MigrationConnection,

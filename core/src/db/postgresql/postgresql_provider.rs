@@ -1,50 +1,59 @@
-use crate::{constants::postgresql::{DEFAULT_SCHEMA, POSTGRESQL_COLUMNS_QUERY, POSTGRESQL_SCHEMA_TABLE}, DMResult};
+use crate::{
+    constants::postgresql::{DEFAULT_SCHEMA, POSTGRESQL_COLUMNS_QUERY, POSTGRESQL_SCHEMA_TABLE},
+    models::data_definitions::{DataDefinition, DataPropertyInfo},
+    DMError, DMResult,
+};
 
-use super::postgresql::{ColumnInfo, Postgresql, TableInfo};
+use super::postgresql::Postgresql;
 
 impl Postgresql {
-    pub async fn create_table_info(&self) -> DMResult<Vec<TableInfo>> {
+    pub async fn create_table_info(&self) -> DMResult<Vec<DataDefinition>> {
         let rows: Vec<tokio_postgres::Row> =
             self.client.query(POSTGRESQL_SCHEMA_TABLE, &[]).await?;
-        let tables: Result<Vec<String>, _> =
-            rows.iter().map(|row| row.try_get::<_, String>(0)).collect();
+        let tables = get_tables_with_schema(rows);
         let mut result = Vec::new();
         for table in tables {
-            for table_name in table {
-                let columns = self.create_column_info(&table_name).await?;
-                let table_info = TableInfo {
-                    table_name,
-                    table_schema: DEFAULT_SCHEMA.to_owned(),
-                    columns,
-                };
+            let columns = self.create_column_info(&table).await?;
+            let table_info = DataDefinition {
+                data_container_name: table,
+                property_info: columns,
+            };
 
-                result.push(table_info);
-            }
+            result.push(table_info);
         }
         Ok(result)
     }
 
-    pub async fn create_column_info(
-        &self,
-        table_name: &str,
-    ) -> DMResult<Vec<ColumnInfo>> {
+    pub async fn create_column_info(&self, table_name: &str) -> DMResult<Vec<DataPropertyInfo>> {
         let column_info = self
             .client
             .query(POSTGRESQL_COLUMNS_QUERY, &[&table_name])
             .await?;
 
-        let mut result: Vec<ColumnInfo> = Vec::new();
+        let mut result: Vec<DataPropertyInfo> = Vec::new();
         column_info.iter().for_each(|row: &tokio_postgres::Row| {
-            result.push(ColumnInfo {
-                column_name: row.get(2),
+            result.push(DataPropertyInfo {
+                property_name: row.get(2),
                 data_type: row.get(3),
                 is_nullable: row.get(4),
-                is_primary_key: row.get(5),
-                foreign_table_name: todo!(),
-                foreign_column_name: todo!(),
+                is_identifier: row.get(5),
+                reference_container_name: todo!(),
+                reference_property_name: todo!(),
             })
         });
 
         Ok(result)
     }
+}
+
+fn get_tables_with_schema(rows: Vec<tokio_postgres::Row>) -> Vec<String> {
+    let tables: Vec<String> = rows
+        .iter()
+        .map(|row: &tokio_postgres::Row| {
+            let schema: String = row.get(0);
+            let table_name: String = row.get(1);
+            format!("{0}.{1}", schema, table_name)
+        })
+        .collect();
+    tables
 }
