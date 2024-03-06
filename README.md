@@ -41,9 +41,9 @@ todo
 docker build -t data-mover .
 ```
 
-2.
+2.Run image
 ```
-docker build -t data-mover .
+TODO
 ```
 
 ## TODO
