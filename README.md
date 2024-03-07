@@ -78,4 +78,5 @@ TODO
 | ------------------ | :------------: |
 | Channels           |      :x:       |
 | Data by file       | :construction: |
+| Indexes       | :construction: |
 | Data by enumerator |      :x:       |
