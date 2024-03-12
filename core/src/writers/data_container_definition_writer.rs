@@ -16,7 +16,7 @@ pub fn write_definition(
     write!(file, "{{")?;
     write!(file, "\"containerName\":{:?},", table_info.data_container_name)?;
     write!(file, "\"columns\":[")?;
-    for column in &table_info.property_info {
+    for column in &table_info.properties_info {
         id = id + 1;
         write!(file, "{{")?;
         write!(file, "\"columnName\":{:?},", column.property_name)?;

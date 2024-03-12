@@ -1,7 +1,7 @@
 #[derive(Debug)]
 pub struct DataDefinition {
     pub data_container_name: String,
-    pub property_info: Vec<DataPropertyInfo>,
+    pub properties_info: Vec<DataPropertyInfo>,
 }
 
 #[derive(Debug)]
