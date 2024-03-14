@@ -61,6 +61,11 @@ impl MigrationConnection {
             None => return Err(DMError::InvalidConnectionString(String::from("database"))),
         };
 
+        let query_params: url::form_urlencoded::Parse<'_> = url.query_pairs();
+
+        // for query_param in query_params {
+            
+        // }
 
         Ok(MigrationConnection {
             full_url: full_url.to_owned(),
