@@ -69,7 +69,7 @@ TODO
 
 | Strategy     | Mongodb |
 | ------------ | :-----: |
-| Denormalized |   :x:   |
+| Denormalized |   :construction:   |
 | Normalized   |   :x:   |
 
 ### Functions
@@ -77,7 +77,7 @@ TODO
 | Name               | Functionality  |
 | ------------------ | :------------: |
 | Channels           |      :x:       |
-| Data by file       | :construction: |
+| Data by file       | :construction: |j
 | Indexes       | :construction: |
 | Data by enumerator |      :x:       |
 | Migration order |      :x:       |
