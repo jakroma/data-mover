@@ -11,7 +11,7 @@ impl DataReceiver for Mongodb {
         for definition_result in load_definitions() {
             match definition_result {
                 Ok(definition) => info!("{:?}", definition),
-                Err(e) => error!("Błąd Kurwa: {:?}", e),
+                Err(e) => error!("Error : {:?}", e),
             }
         }
 

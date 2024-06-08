@@ -57,7 +57,7 @@ TODO
 | Postgressql |       :white_check_mark::star:       |          :x:          |  :x:  |
 | Mongodb     |                 :x:                  |    :construction:     |  :x:  |
 
-:star: - Not all type mapped
+:star: - [Not all type mapped](https://github.com/romabliski/data-mover/blob/main/core/src/db/postgresql/postgresql_data_types.rs)
 
 ### Migrations
 
