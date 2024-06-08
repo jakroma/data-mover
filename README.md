@@ -54,8 +54,10 @@ TODO
 
 | Database    | Generate simple tables from provider | Import to receiver db | Tests |
 | ----------- | :----------------------------------: | :-------------------: | :---: |
-| Postgressql |            :construction:            |          :x:          |  :x:  |
+| Postgressql |       :white_check_mark::star:       |          :x:          |  :x:  |
 | Mongodb     |                 :x:                  |    :construction:     |  :x:  |
+
+:star: - Not all type mapped
 
 ### Migrations
 
@@ -67,17 +69,17 @@ TODO
 
 ### SQL -> Nosql settings
 
-| Strategy     | Mongodb |
-| ------------ | :-----: |
-| Denormalized |   :construction:   |
-| Normalized   |   :x:   |
+| Strategy     |    Mongodb     |
+| ------------ | :------------: |
+| Denormalized | :construction: |
+| Normalized   |      :x:       |
 
 ### Functions
 
 | Name               | Functionality  |
 | ------------------ | :------------: |
 | Channels           |      :x:       |
-| Data by file       | :construction: |j
-| Indexes       | :construction: |
+| Data by file       | :construction: |
+| Indexes            | :construction: |
 | Data by enumerator |      :x:       |
-| Migration order |      :x:       |
+| Migration order    |      :x:       |
