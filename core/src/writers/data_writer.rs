@@ -5,7 +5,7 @@ use std::{
 };
 
 use crate::{
-    db::postgresql::{postgresql::Postgresql, postgresql_data_types::PostgresDataType},
+    db::postgresql::{postgresql_data_types::PostgresDataType},
     DMResult,
 };
 
@@ -21,7 +21,7 @@ pub fn write_data(
         .open(file_path)?;
 
     let first_element = &0;
-    let mut data_elements = &data_element.clone();
+    let data_elements = &data_element.clone();
 
     if data_elements == first_element {
         file.write(&[0x1f])?;

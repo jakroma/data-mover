@@ -1,28 +1,21 @@
-CREATE TABLE public.tbl_users (
-	id UUID PRIMARY KEY,
-	type SMALLINT DEFAULT 0 NOT NULL REFERENCES public.dic_user_types(id) ON DELETE CASCADE,
-	gender CHAR,
-	avatar_id SMALLINT,
-	name TEXT NOT NULL,
-	description VARCHAR(300),
-	created TIMESTAMP WITH TIME ZONE NOT NULL,
-	updated TIMESTAMP WITH TIME ZONE NOT NULL
+CREATE TABLE user_types (
+    id SERIAL PRIMARY KEY,
+    type_name VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE public.dic_user_types (
-	id SMALLINT PRIMARY KEY,
-	value TEXT
+INSERT INTO user_types (type_name) VALUES ('Admin'), ('Standard');
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    user_type_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_type_id) REFERENCES user_types(id)
 );
 
-INSERT INTO public.dic_user_types (id, value)
-VALUES (0, 'Normal'), (1, 'Admin');
-
-COMMENT ON TABLE tbl_users IS '';
-COMMENT ON COLUMN tbl_users.name IS '';
-
-
-INSERT INTO public.tbl_users (id, name, type, gender, avatar_id, created, updated)
-VALUES
-('619abdbf-41bd-4f2a-a482-dcbd8151fe6d', 'TEST', 0, 'm', 1, now(), now()),
-('629abdbf-41bd-4f2a-a482-dcbd8151fe6d', 'TEST2', 0, 'm', 2, now(), now()),
-('639abdbf-41bd-4f2a-a482-dcbd8151fe6d', 'TEST3', 0, 'f', 3, now(), now()),
+INSERT INTO users (username, email, user_type_id) VALUES 
+('admin_user1', 'admin1@example.com', 1),
+('admin_user2', 'admin2@example.com', 1),
+('standard_user1', 'standard1@example.com', 2),
+('standard_user2', 'standard2@example.com', 2);

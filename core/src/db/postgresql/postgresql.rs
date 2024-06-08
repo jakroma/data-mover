@@ -3,13 +3,13 @@ use tokio_postgres::{Client, NoTls};
 use crate::{
     models::{
         connection::MigrationConnection, migration_execution_settings::MigrationExecutionSettings,
-    },
-    DMResult,
+    }, DMResult
 };
 
 pub struct Postgresql {
     pub client: Client,
-    pub exec_settings: MigrationExecutionSettings,
+    pub schema: Option<String>,
+    pub settings: MigrationExecutionSettings,
 }
 
 impl Postgresql {
@@ -38,7 +38,8 @@ impl Postgresql {
 
         Ok(Postgresql {
             client,
-            exec_settings,
+            settings: exec_settings,
+            schema: connection_model.schema
         })
     }
 }

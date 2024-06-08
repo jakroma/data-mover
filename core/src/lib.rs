@@ -5,6 +5,7 @@ pub mod error;
 pub mod constants;
 pub mod writers;
 pub mod parsers;
+pub mod utils;
 
 pub use crate::error::DMError;
 

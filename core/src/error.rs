@@ -1,7 +1,5 @@
 use url::ParseError;
 
-use crate::db::mongodb::mongodb::Mongodb;
-
 #[derive(thiserror::Error, Debug)]
 pub enum DMError {
     #[error("IO error")]
@@ -18,6 +16,12 @@ pub enum DMError {
     InvalidConnectionString(String),
     #[error("url parser error")]
     UrlParseError(ParseError),
+    #[error("Directory does not exist: {0}")]
+    NotExistsDirectoryError(String),
+    #[error("Json error")]
+    JsonError(),
+    #[error(transparent)]
+    SerdeJson(#[from] serde_json::Error),
 }
 
 impl From<ParseError> for DMError {

@@ -1,10 +1,9 @@
-use mongodb::{bson::doc, options::ClientOptions, Client, Database};
+use mongodb::{options::ClientOptions, Client, Database};
 
 use crate::{
     models::{
         connection::MigrationConnection, migration_execution_settings::MigrationExecutionSettings,
-    },
-    DMResult,
+    }, DMResult
 };
 
 pub struct Mongodb {
@@ -13,16 +12,14 @@ pub struct Mongodb {
     pub db: Database,
 }
 
+
 impl Mongodb {
-    pub async fn new(
-        connection_model: MigrationConnection,
-        exec_settings: MigrationExecutionSettings,
-    ) -> DMResult<Mongodb> {
+    pub async fn new(connection_model: MigrationConnection, settings: MigrationExecutionSettings) -> DMResult<Self>
+    {
         let client_options = ClientOptions::parse(connection_model.full_url).await?;
         let client = Client::with_options(client_options)?;
-
         let db = client.database(&connection_model.database);
 
-        Ok(Mongodb { client, db, exec_settings })
+        Ok(Mongodb { client, db, exec_settings: settings })
     }
 }
