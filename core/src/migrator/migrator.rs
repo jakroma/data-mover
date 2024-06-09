@@ -1,6 +1,6 @@
 use log::info;
 
-use crate::{db::db_type::DatabaseConnectionType, DMResult};
+use crate::{db::database::{sort_tables_by_dependencies, DatabaseConnectionType}, migrator::migrator_steps::MigrationProviderStats, utils::file_utils::save_sorted_containers_to_file, DMResult};
 
 use super::migrator_steps::{DataProvider, DataReceiver};
 
@@ -13,19 +13,33 @@ impl Migrator {
     pub async fn run(&self) -> DMResult<()> {
         info!("[Migration] Started!");
 
-        info!("[Migration][Start] Getting data from data provider.");
-        self.data_provider.get_data().await?;
-        info!("[Migration][End] Getting data from data provider.");
+        self.run_provider().await?;
 
-        info!("[Migration][Start] Received data from provider.");
-        self.data_receiver.receive_data().await?;
-        info!("[Migration][End] Getting data from data provider.");
+        self.run_receiver().await?;
 
         info!("[Migration] Ended!");
 
         Ok(())
     }
 
+    async fn run_receiver(&self) -> Result<(), crate::DMError> {
+        info!("[Migration][Receiver] Start.");
+        self.data_receiver.receive_data().await?;
+        info!("[Migration][Receiver] End.");
+        Ok(())
+    }
+    
+    async fn run_provider(&self) -> Result<(), crate::DMError> {
+        info!("[Migration][Provider] Start.");
+        let result = self.data_provider.get_data(MigrationProviderStats::new()).await?;
+
+        let ordered_migration = sort_tables_by_dependencies(&result.migration_order)?;
+        save_sorted_containers_to_file(&ordered_migration)?;
+
+        info!("[Migration][Provider] End.");
+        Ok(())
+    }
+    
     pub fn new(data_provider: DatabaseConnectionType, data_receiver: DatabaseConnectionType) -> Self {
         Migrator { data_provider, data_receiver }
     }

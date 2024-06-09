@@ -10,7 +10,7 @@ pub fn write_definition(table_info: &DataDefinition, file_path: &Path) -> DMResu
     write!(
         file,
         "\"containerName\":{:?},",
-        table_info.data_container_name
+        table_info.container_name
     )?;
     write!(file, "\"properties\":[")?;
     for column in &table_info.properties_info {
@@ -19,15 +19,15 @@ pub fn write_definition(table_info: &DataDefinition, file_path: &Path) -> DMResu
         write!(file, "\"propertyName\":{:?},", column.property_name)?;
         write!(file, "\"dataType\":{:?},", column.data_type)?;
         write!(file, "\"isNullable\":{:?},", column.is_nullable)?;
-        write!(file, "\"isPrimaryKey\":{:?},", column.is_identifier)?;
+        write!(file, "\"isIdentifier\":{:?},", column.is_identifier)?;
         write!(
             file,
-            "\"foreignContainerName\":{},",
+            "\"referenceContainerName\":{},",
             write_option(&column.reference_container_name)
         )?;
         write!(
             file,
-            "\"foreignPropertyName\":{}",
+            "\"referencePropertyName\":{}",
             write_option(&column.reference_property_name)
         )?;
         write!(file, "}},")?;

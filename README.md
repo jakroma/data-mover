@@ -76,10 +76,10 @@ TODO
 
 ### Functions
 
-| Name               | Functionality  |
-| ------------------ | :------------: |
-| Channels           |      :x:       |
-| Data by file       | :construction: |
-| Indexes            | :construction: |
-| Data by enumerator |      :x:       |
-| Migration order    |      :x:       |
+| Name               |   Functionality    |
+| ------------------ | :----------------: |
+| Channels           |        :x:         |
+| Data by file       |   :construction:   |
+| Indexes            |   :construction:   |
+| Data by enumerator |        :x:         |
+| Migration order    | :white_check_mark: |

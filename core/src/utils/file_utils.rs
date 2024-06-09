@@ -1,12 +1,11 @@
 use std::{
-    fs,
-    path::{Path, MAIN_SEPARATOR, MAIN_SEPARATOR_STR},
+    fs::{self, File}, io::{Read, Write}, path::{Path, MAIN_SEPARATOR, MAIN_SEPARATOR_STR}
 };
 
 use log::info;
 
 use crate::{
-    constants::TEMP_DIRECTORY, models::data_definitions::DataDefinition, DMError, DMResult,
+    constants::{MIGRATION_ORDER_FILE_NAME, TEMP_DIRECTORY}, models::data_definitions::DataDefinition, DMError, DMResult,
 };
 
 pub fn prepare_temp_folder() -> DMResult<String> {
@@ -20,34 +19,16 @@ pub fn prepare_temp_folder() -> DMResult<String> {
     Ok(string_path)
 }
 
-pub fn load_definitions<'a>() -> impl Iterator<Item = Result<DataDefinition, DMError>> + 'a {
-    let string_path = format!("{}{}", TEMP_DIRECTORY.join(MAIN_SEPARATOR_STR), MAIN_SEPARATOR);
-    let dir_path = Path::new(&string_path);
+pub fn save_sorted_containers_to_file(sorted_containers: &[String]) -> DMResult<()> {
+    let json_data = serde_json::to_string(sorted_containers)?;
+    let mut file = File::create(format!("{}{}{}", TEMP_DIRECTORY.join(MAIN_SEPARATOR_STR), MAIN_SEPARATOR_STR, MIGRATION_ORDER_FILE_NAME))?;
+    file.write_all(json_data.as_bytes())?;
+    Ok(())
+}
 
-    let entries_iter = fs::read_dir(dir_path)
-        .map_err(DMError::IoError)
-        .into_iter()
-        .flat_map(|result| result);
-
-    entries_iter.filter_map(|entry| {
-        entry.ok().and_then(|e| {
-            let path = e.path();
-            if path.is_file()
-                && path
-                    .file_name()
-                    .and_then(|f| f.to_str())
-                    .map_or(false, |s| s.starts_with("definitions_"))
-            {
-                Some(
-                    fs::read_to_string(&path)
-                        .map_err(DMError::IoError)
-                        .and_then(|content| {
-                            serde_json::from_str(&content).map_err(|op| DMError::SerdeJson(op))
-                        }),
-                )
-            } else {
-                None
-            }
-        })
-    })
+pub fn load_sorted_containers_from_file() -> DMResult<Vec<String>> {
+    let json_data = std::fs::read_to_string(format!("{}{}{}", TEMP_DIRECTORY.join(MAIN_SEPARATOR_STR), MAIN_SEPARATOR_STR, MIGRATION_ORDER_FILE_NAME))?;
+    let sorted_containers = serde_json::from_str(&json_data)?;
+    
+    Ok(sorted_containers)
 }

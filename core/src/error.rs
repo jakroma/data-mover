@@ -22,6 +22,8 @@ pub enum DMError {
     JsonError(),
     #[error(transparent)]
     SerdeJson(#[from] serde_json::Error),
+    #[error("Error: {0}")]
+    Error(String),
 }
 
 impl From<ParseError> for DMError {

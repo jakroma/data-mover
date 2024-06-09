@@ -1,0 +1,28 @@
+db.createCollection("users");
+
+db.users.insertMany([
+    {
+        username: "admin_user1",
+        email: "admin1@example.com",
+        user_type: "Admin",
+        created_at: new Date()
+    },
+    {
+        username: "admin_user2",
+        email: "admin2@example.com",
+        user_type: "Admin",
+        created_at: new Date()
+    },
+    {
+        username: "standard_user1",
+        email: "standard1@example.com",
+        user_type: "Standard",
+        created_at: new Date()
+    },
+    {
+        username: "standard_user2",
+        email: "standard2@example.com",
+        user_type: "Standard",
+        created_at: new Date()
+    }
+]);

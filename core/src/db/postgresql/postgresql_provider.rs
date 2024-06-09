@@ -1,4 +1,4 @@
-use std::path::{self, Path};
+use std::{collections::HashMap, path::{self, Path}};
 
 use async_trait::async_trait;
 use log::{error, info};
@@ -9,7 +9,7 @@ use crate::{
         POSTGRESQL_COLUMNS_QUERY, POSTGRESQL_SCHEMA_TABLE, POSTGRESQL_SCHEMA_TABLE_WHERE,
     },
     db::postgresql::postgresql_data_types::{get_typed_data, PostgresDataType},
-    migrator::migrator_steps::DataProvider,
+    migrator::migrator_steps::{DataProvider, MigrationProviderResult, MigrationProviderStats},
     models::data_definitions::{DataDefinition, DataPropertyInfo},
     utils::file_utils::prepare_temp_folder,
     writers::{data_container_definition_writer::write_definition, data_writer::write_data},
@@ -20,34 +20,51 @@ use super::postgresql::Postgresql;
 
 #[async_trait]
 impl DataProvider for Postgresql {
-    async fn get_data(&self) -> DMResult<()> {
+    async fn get_data(&self, stats: MigrationProviderStats) -> DMResult<MigrationProviderResult> {
+        let mut migration_order: HashMap<String, Vec<String>> = HashMap::new();
         let temp_folder_path = prepare_temp_folder()?;
         info!("[Migration] Create table infos");
-        let table_infos = self.create_table_info().await?;
+        let table_infos: Vec<DataDefinition> = self.create_table_info().await?;
 
         for table_info in table_infos {
             let definition_path = format!(
                 "{0}{1}definition_{2}.json",
                 temp_folder_path,
                 path::MAIN_SEPARATOR,
-                table_info.data_container_name
+                table_info.container_name
             );
             let data_path = format!(
                 "{0}{1}{2}_data.dbc",
                 temp_folder_path,
                 path::MAIN_SEPARATOR,
-                table_info.data_container_name
+                table_info.container_name
             );
 
-            info!("[Migration][{}] Write definitions", table_info.data_container_name);
+            info!("[Migration][{}] Write definitions", table_info.container_name);
             write_definition(&table_info, Path::new(&definition_path))?;
 
+            info!("[Migration][{}] Migrate Data", table_info.container_name);
             self.create_data_migration(&table_info, data_path).await?;
-        }
 
-        Ok(())
+            add_table_to_hash_order(&mut migration_order, &table_info);
+        }
+        
+        info!("{:?}", migration_order);
+        Ok(MigrationProviderResult::new(stats, migration_order))
     }
 }
+
+fn add_table_to_hash_order(order_hash: &mut HashMap<String, Vec<String>>, table_info: &DataDefinition) {
+    let mut dependencies = Vec::new();
+    for property_info in &table_info.properties_info {
+        if let Some(name) = &property_info.reference_container_name {
+            dependencies.push(name.clone());
+        }
+    }
+
+    order_hash.insert(table_info.container_name.clone(), dependencies);
+}
+
 
 impl Postgresql {
     pub async fn create_table_info(&self) -> DMResult<Vec<DataDefinition>> {
@@ -58,7 +75,7 @@ impl Postgresql {
         for table in tables {
             let columns: Vec<DataPropertyInfo> = self.create_column_info(&table).await?;
             let table_info: DataDefinition = DataDefinition {
-                data_container_name: format!("{}.{}", table.0, table.1),
+                container_name: format!("{}.{}", table.0, table.1),
                 properties_info: columns,
             };
 
@@ -91,6 +108,7 @@ impl Postgresql {
                 reference_property_name: row.get::<_, Option<String>>(8),
             })
         });
+        info!("{:?}", result);
 
         Ok(result)
     }
@@ -114,7 +132,7 @@ impl Postgresql {
         let mut all_data_fetched = false;
 
         while !all_data_fetched {
-            let table_name: String = data_definition.data_container_name.clone();
+            let table_name: String = data_definition.container_name.clone();
 
             let statement = format!(
                 "SELECT {} FROM {} LIMIT {} OFFSET {}",

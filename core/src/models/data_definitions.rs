@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DataDefinition {
-    pub data_container_name: String,
+    pub container_name: String,
     pub properties_info: Vec<DataPropertyInfo>,
 }
 

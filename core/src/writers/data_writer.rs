@@ -27,11 +27,13 @@ pub fn write_data(
         file.write(&[0x1f])?;
     }
 
-    file.write(&[0x1f])?;
+    file.write(&[0x1e])?;
     file.write(&data.as_bytes())?;
 
     if *data_count == data_elements + 1 {
-        write!(file, "),\n")?;
+        file.write(&[0x1e])?;
+        file.write(&[0x1f])?;
+        write!(file, "\n")?;
     }
 
     Ok(())

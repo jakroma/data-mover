@@ -1,7 +1,7 @@
 use url::Url;
 
 use crate::{
-    db::db_type::{DatabaseConnectionType, DatabaseType},
+    db::database::{DatabaseConnectionType, DatabaseType},
     DMError, DMResult,
 };
 
