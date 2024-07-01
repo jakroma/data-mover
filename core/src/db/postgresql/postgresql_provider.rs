@@ -48,8 +48,7 @@ impl DataProvider for Postgresql {
 
             add_table_to_hash_order(&mut migration_order, &table_info);
         }
-        
-        info!("{:?}", migration_order);
+
         Ok(MigrationProviderResult::new(stats, migration_order))
     }
 }
@@ -108,7 +107,6 @@ impl Postgresql {
                 reference_property_name: row.get::<_, Option<String>>(8),
             })
         });
-        info!("{:?}", result);
 
         Ok(result)
     }
@@ -138,7 +136,7 @@ impl Postgresql {
                 "SELECT {} FROM {} LIMIT {} OFFSET {}",
                 columns, table_name, limit, offset
             );
-            println!("{}", statement);
+
             let rows: Vec<Row> = self.client.query(&statement, &[]).await?;
 
             if rows.len() < limit.try_into().unwrap() {

@@ -4,9 +4,7 @@ use std::{
 
 use log::info;
 
-use crate::{
-    constants::{MIGRATION_ORDER_FILE_NAME, TEMP_DIRECTORY}, models::data_definitions::DataDefinition, DMError, DMResult,
-};
+use crate::{constants::{MIGRATION_ORDER_FILE_NAME, TEMP_DIRECTORY}, DMResult};
 
 pub fn prepare_temp_folder() -> DMResult<String> {
     let string_path = TEMP_DIRECTORY.join(MAIN_SEPARATOR_STR);

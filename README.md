@@ -5,7 +5,7 @@
     - [Diagrams](#diagrams)
   - [Run](#run)
     - [cargo](#cargo)
-    - [docker](#docker)
+    - [docker TODO](#docker-todo)
   - [TODO](#todo)
     - [DB](#db)
       - [Steps of migration](#steps-of-migration)
@@ -35,7 +35,7 @@ flowchart TD
 ### cargo
 todo
 
-### docker
+### docker TODO
 1. Build image
 ```
 docker build -t data-mover .
@@ -76,10 +76,12 @@ TODO
 
 ### Functions
 
-| Name               |   Functionality    |
-| ------------------ | :----------------: |
-| Channels           |        :x:         |
-| Data by file       |   :construction:   |
-| Indexes            |   :construction:   |
-| Data by enumerator |        :x:         |
-| Migration order    | :white_check_mark: |
+| Name                            |   Functionality    |
+| ------------------------------- | :----------------: |
+| Channels                        |        :x:         |
+| Data by file                    |   :construction:   |
+| Indexes                         |   :construction:   |
+| Data by enumerator              |        :x:         |
+| Migration order                 | :white_check_mark: |
+| specify schema import           |   :construction:   |
+| specify temporary file location |   :construction:   |
